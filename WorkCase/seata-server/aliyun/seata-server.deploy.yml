@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: seata-server
+  name: seata-server
+  namespace: piguncle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: seata-server
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        k8s-app: seata-server
+    spec:
+      containers:
+        - env:
+            - name: SEATA_CONFIG_NAME
+              value: 'file:/root/seata-config/registry'
+          image: 'xwjr-registry.cn-beijing.cr.aliyuncs.com/piguncle/seata-server:1.4.2'
+          imagePullPolicy: IfNotPresent
+          name: seata-server
+          ports:
+            - containerPort: 8091
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /root/seata-config/
+              name: volume-1643172546406
+            - mountPath: /root
+              name: volume-1643172946052
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: seata-server-config
+          name: volume-1643172546406
+        - configMap:
+            defaultMode: 420
+            name: file-conf
+          name: volume-1643172946052
