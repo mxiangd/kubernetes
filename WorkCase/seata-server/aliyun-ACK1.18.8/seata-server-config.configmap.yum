@@ -71,7 +71,6 @@ data:
       }
     }
 
-
   registry.conf: |-
     registry {
        type = "nacos" 
