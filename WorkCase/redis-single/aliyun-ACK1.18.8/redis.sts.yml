@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: piguncle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  serviceName: redis-svc
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - image: 'xwjr-registry.cn-beijing.cr.aliyuncs.com/jcss/redis:20200531'
+          imagePullPolicy: IfNotPresent
+          name: redis
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: redis-config
+          name: volume-1643252518976
+        - hostPath:
+            path: /etc/localtime
+            type: ''
+          name: /etc/localtime
+  updateStrategy:
+    type: RollingUpdate
