@@ -24,3 +24,4 @@ data:
     dir /app/data
 
     appendonly no
+    requirepass 123456
